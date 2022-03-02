@@ -37,7 +37,7 @@
         return false;
       } else if (brickNo == 2 && bricks[1] == false) {
         return false;
-      } else if (brickNo == 1 && bricks[0] == false || bricks[2 == false]) {
+      } else if (brickNo == 1 && bricks[0] == false || bricks[2] == false) {
         return false;
       } else {
         return true;
@@ -45,6 +45,10 @@
     }
 
 
+    /*
+      Check if a removal of a brick is allowed by games rule (the top three
+      layers that have three bricks and the ones above are not allowed)
+    */
     checkifAllowed(level) {
       var isAllowed;
       if (this.getLastLayer().isFull()) {
@@ -70,50 +74,64 @@
       doesnt remove the brick
     */
     removeBrick(level, brickNo) {
-      var currentLayer = this.layers[level];
-      var bricks = currentLayer.getBricks();
 
-      var wouldNotCollapse = this.checkStability(level, brickNo);
+      if (level < this.layers.length) {
+        var currentLayer = this.layers[level];
+        var bricks = currentLayer.getBricks();
 
-      if (this.checkifAllowed(level)) {
-        if (wouldNotCollapse) {
-          bricks[brickNo] = false;
-          this.layers[level].setBricks(bricks);
+        var wouldNotCollapse = this.checkStability(level, brickNo);
 
-          // if the last layer is full, create a new layer and add the removed
-          // brick there
-          if(this.getLastLayer().isFull()) {
-            var newLayer = {
-              orientation: null,
-              bricks: [true, false, false]
-            };
+        if (this.checkifAllowed(level)) {
+          if (wouldNotCollapse) {
+            if (this.layers[level].getBricks()[brickNo] == true) {
+              bricks[brickNo] = false;
+              this.layers[level].setBricks(bricks);
 
-            // get the orientation of the top layer and set the orientation of the
-            // new layer to the opposite orientation
-            if (this.getLastLayer().getOrientation == Layer.orientationNorth) {
-              newLayer.orientation = Layer.orientationWest;
+              // if the last layer is full, create a new layer and add the removed
+              // brick there
+              if(this.getLastLayer().isFull()) {
+                var newLayer = {
+                  orientation: null,
+                  bricks: [true, false, false]
+                };
+
+                // get the orientation of the top layer and set the orientation of the
+                // new layer to the opposite orientation
+                if (this.getLastLayer().getOrientation == Layer.orientationNorth) {
+                  newLayer.orientation = Layer.orientationWest;
+                } else {
+                  newLayer.orientation = Layer.orientationNorth;
+                }
+
+                this.layers.push(new Layer(newLayer.orientation, newLayer.bricks));
+              } else {
+                // if the top layer is not full, add the brick there
+                this.getLastLayer().addBrick();
+              }
+
+              return true;
             } else {
-              newLayer.orientation = Layer.orientationNorth;
+              console.log("### No brick at this position. (" + level + ", " + brickNo + ")")
+              return false;
             }
-
-            this.layers.push(new Layer(newLayer.orientation, newLayer.bricks));
           } else {
-            // if the top layer is not full, add the brick there
-            this.getLastLayer().addBrick();
+            console.log("### Move is allowed but tower would collapse. (" + level + ", " + brickNo + ")")
+            return false;
           }
-
-          return true;
         } else {
-          console.log("### Move is allowed but tower would collapse.")
+          console.log("### Move not allowed. (" + level + ", " + brickNo + ")")
           return false;
         }
       } else {
-        console.log("### Move not allowed.");
+        console.log("### Level is above height of the stack. (" + level + ", " + brickNo + ")")
         return false;
       }
     }
 
 
+    /*
+      Returns the top layer of the stack
+    */
     getLastLayer() {
       return this.layers[this.layers.length-1];
     }
@@ -147,6 +165,9 @@
     }
 
 
+    /*
+      Renders the stack to the console
+    */
     render() {
       console.log("Stack:");
       for (var i = this.layers.length-1; i >= 0; i--) {
