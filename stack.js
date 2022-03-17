@@ -89,11 +89,19 @@
 
               // if the last layer is full, create a new layer and add the removed
               // brick there
-              if(this.getLastLayer().isFull()) {
+              if (this.getLastLayer().isFull()) {
                 var newLayer = {
                   orientation: null,
                   bricks: [true, false, false]
                 };
+
+                // get orientation of the last layer and set the orientation of the new
+                // layer to the opposite orientation
+                if (this.getLastLayer().getOrientation() == Layer.orientationWest) {
+                  newLayer.orientation = Layer.orientationNorth;
+                } else {
+                  newLayer.orientation = Layer.orientationWest;
+                }
 
                 // get the orientation of the top layer and set the orientation of the
                 // new layer to the opposite orientation
