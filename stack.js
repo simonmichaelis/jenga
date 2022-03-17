@@ -95,17 +95,9 @@
                   bricks: [true, false, false]
                 };
 
-                // get orientation of the last layer and set the orientation of the new
-                // layer to the opposite orientation
-                if (this.getLastLayer().getOrientation() == Layer.orientationWest) {
-                  newLayer.orientation = Layer.orientationNorth;
-                } else {
-                  newLayer.orientation = Layer.orientationWest;
-                }
-
                 // get the orientation of the top layer and set the orientation of the
                 // new layer to the opposite orientation
-                if (this.getLastLayer().getOrientation == Layer.orientationNorth) {
+                if (this.getLastLayer().getOrientation() == Layer.orientationNorth) {
                   newLayer.orientation = Layer.orientationWest;
                 } else {
                   newLayer.orientation = Layer.orientationNorth;
