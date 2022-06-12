@@ -28,7 +28,7 @@
 
 
     /*
-      check if the Stack would collapse when removing a certain brick
+      check if the stack would collapse when removing a certain brick
     */
     checkStability(level, brickNo) {
       var bricks = this.layers[level].getBricks();
